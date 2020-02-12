@@ -151,4 +151,8 @@ sketch
 
 # End of https://www.gitignore.io/api/node,react,macos
 
-uploads/
+# exclude everything from uploads
+uploads/*
+
+# exception to the rule
+!uploads/.gitkeep 
