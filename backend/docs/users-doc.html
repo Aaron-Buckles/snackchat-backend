@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Docs | Users</title>
+  </head>
+  <body>
+    <a href="/docs">Back to all docs</a>
+    <div>
+      <h1>Users</h1>
+      <a href="/api/users"><code>/api/users</code></a>
+    </div>
+    <ul>
+      <li>
+        <h2><code>GET /api/users</code></h2>
+        <p>Get a list of all user names.</p>
+        <div>
+          <h3>Success Response</h3>
+          <code>[User.name]</code>
+        </div>
+        <div>
+          <h3>Error Response</h3>
+          <code>{ err }</code>
+        </div>
+      </li>
+      <li>
+        <h2><code>POST /api/users/signup</code></h2>
+        <p>Signup a user with name, email, and password.</p>
+        <div>
+          <h3>JSON Data</h3>
+          <ul>
+            <li>
+              <code>name</code>: The name of the user (both first and last)
+            </li>
+            <li>
+              <code>email</code>: The email of the user (must be formatted
+              correctly)
+            </li>
+            <li>
+              <code>password</code>: The user's password (will be encrypted)
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3>Success Response</h3>
+          <code>{ message }</code>
+        </div>
+        <div>
+          <h3>Error Response</h3>
+          <code>{ err }</code>
+        </div>
+      </li>
+    </ul>
+  </body>
+</html>

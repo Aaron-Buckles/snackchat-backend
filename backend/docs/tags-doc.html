@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Docs | Tags</title>
+  </head>
+  <body>
+    <a href="/docs">Back to all docs</a>
+    <div>
+      <h1>Tags</h1>
+      <a href="/api/tags"><code>/api/tags</code></a>
+    </div>
+    <ul>
+      <li>
+        <h2><code>GET /api/tags</code></h2>
+        <p>Get all tags.</p>
+        <div>
+          <h3>Success Response</h3>
+          <code>[{ Tag }]</code>
+        </div>
+        <div>
+          <h3>Error Response</h3>
+          <code>{ err }</code>
+        </div>
+      </li>
+      <li>
+        <h2><code>POST /api/tags</code></h2>
+        <p>Create a tag by specifying the name.</p>
+        <div>
+          <h3>JSON Data</h3>
+          <ul>
+            <li><code>name</code>: The name of the tag (e.g. "Vegan")</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Success Response</h3>
+          <code>{ tag, message }</code>
+        </div>
+        <div>
+          <h3>Error Response</h3>
+          <code>{ err }</code>
+        </div>
+      </li>
+    </ul>
+  </body>
+</html>

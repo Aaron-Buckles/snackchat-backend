@@ -1,0 +1,4 @@
+{
+  "name": "Snackchat (Dev)",
+  "db": "mongodb+srv://<username>:<password>@cluster0-ulaiv.mongodb.net/test?retryWrites=true&w=majority"
+}
