@@ -25,14 +25,3 @@
 ## Documentation
 
 - Go to `http://localhost:3000/docs`
-- To access a page that requires authentication, use the Authorization key
-  - e.g. With axios:
-
-```javascript
-let config = {
-  headers: {
-    Authorization: "mytoken"
-  }
-  axios.post(URL, data, config)
-}
-```
