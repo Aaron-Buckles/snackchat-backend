@@ -18,6 +18,7 @@ router.post("/login", async (req, res) => {
 // TODO: Right now, a logged in user could delete any other logged
 // in user. Instead, use req.userData from checkAuth
 router.delete("/:userId", checkAuth, (req, res) => {
+  console.log(req.userData)
   UserController.deleteUser(req, res);
 });
 

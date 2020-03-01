@@ -1,4 +1,6 @@
 const { Review, validateReview } = require("../models/review");
+const { Business } = require("../models/business");
+const { User } = require("../models/user");
 
 getReviews = async (req, res) => {
   try {
@@ -15,10 +17,9 @@ getReviews = async (req, res) => {
 
 getReviewById = async (req, res) => {
   try {
-    const review = await (
-      await Review.findById(req.params.id).populate("tags")
-    ).populated("author", "name");
-    console.log(review);
+    const review = await Review.findById(req.params.id)
+      .populate("tags")
+      .populate("author", "name");
     if (!review) return res.status(404).send({ err: "Review not found" });
     return res.status(200).send({ review });
   } catch (err) {
@@ -36,11 +37,15 @@ createReview = async (req, res) => {
     starRating: req.body.starRating,
     reviewImage: req.file.path,
     tags: req.body.tags,
-    author: req.userData.userId
+    author: req.userData.userId,
+    business_id: req.body.business_id
   });
 
   try {
     await review.save();
+
+    await Business.findByIdAndUpdate(req.body.business_id, { $addToSet: { reviews: review._id, tags: review.tags }, $inc: {'review_count': 1} })
+
     return res.status(201).send({
       review,
       message: "Review successfully created!"
@@ -49,6 +54,36 @@ createReview = async (req, res) => {
     return res.status(500).send({ err });
   }
 };
+
+likeReview = async (req, res) => {
+  try {
+    const review = await Review.findOneAndUpdate({ _id: req.params.id }, { $inc: { 'likeCount': 1 }, $addToSet: { 'likes': req.userData.userId } }).exec()
+
+    await User.findByIdAndUpdate(req.userData.userId, { $addToSet: {likedReviews: review._id}})
+
+    return res.status(200).send({
+      message: "Successfully liked review!"
+    });
+  } catch (err) {
+    console.log(err)
+    return res.status(500).send({ err });
+  }
+}
+
+unlikeReview = async (req, res) => {
+  try {
+    const review = await Review.findOneAndUpdate({ _id: req.params.id }, { $inc: { 'likeCount': -1 }, $pull: { likes: req.userData.userId }}).exec()
+
+    await User.findByIdAndUpdate(req.userData.userId, { $pull: { likedReviews: review._id } })
+
+    return res.status(200).send({
+      message: "Successfully unliked review!"
+    });
+  } catch (err) {
+    console.log(err)
+    return res.status(500).send({ err });
+  }
+}
 
 updateReview = async (req, res) => {
   const { error } = validateReview(req.body);
@@ -91,6 +126,8 @@ deleteReview = async (req, res) => {
 module.exports = {
   getReviews,
   getReviewById,
+  likeReview,
+  unlikeReview,
   createReview,
   updateReview,
   deleteReview

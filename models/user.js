@@ -7,7 +7,9 @@ const User = mongoose.model(
   new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
+    likedReviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
+    preferences: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tag" }]
   }).plugin(uniqueValidator)
 );
 
@@ -19,7 +21,8 @@ function validateUser(user) {
     email: Joi.string()
       .email()
       .required(),
-    password: Joi.string().required()
+    password: Joi.string().required(),
+    preferences: Joi.array()
   });
 
   return schema.validate(user);

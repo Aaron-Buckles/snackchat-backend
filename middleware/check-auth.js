@@ -8,6 +8,6 @@ module.exports = (req, res, next) => {
     req.userData = decoded; // Routes that use this middleware can access req.userData
     next();
   } catch (err) {
-    return res.status(401).send({ err: "Auth failed" });
+    return res.status(401).send({ message: "Authentication failed" });
   }
 };

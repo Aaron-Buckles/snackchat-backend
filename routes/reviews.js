@@ -33,6 +33,16 @@ router.post(
   upload.single("reviewImage"),
   ReviewController.createReview
 );
+router.post(
+  "/:id/like",
+  checkAuth,
+  ReviewController.likeReview
+);
+router.post(
+  "/:id/unlike",
+  checkAuth,
+  ReviewController.unlikeReview
+);
 router.put(
   "/:id",
   checkAuth,

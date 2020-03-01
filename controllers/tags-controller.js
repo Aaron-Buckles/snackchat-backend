@@ -14,9 +14,14 @@ getAllTags = async (req, res) => {
 };
 
 createTag = async (req, res) => {
-  console.log(req.body);
   const { error } = validateTag(req.body);
   if (error) return res.status(400).send({ err: error.details[0].message });
+
+  const exists = await Tag.findOne({ name: req.body.name })
+
+  if (exists) {
+    return res.status(403).send({ err: "Tag already exists!" });
+  }
 
   const tag = new Tag({
     name: req.body.name

@@ -9,7 +9,7 @@ const express = require("express");
 const app = express();
 
 // Debugging
-const startupDebug = require("debug")("snackchat:startup");
+const startupDebug = require("debug")("http");
 
 // Middleware
 app.use("/uploads", express.static("uploads"));
@@ -29,6 +29,7 @@ app.use("/docs", require("./routes/docs"));
 app.use("/api/users", require("./routes/users"));
 app.use("/api/reviews", require("./routes/reviews"));
 app.use("/api/tags", require("./routes/tags"));
+app.use("/api/businesses", require("./routes/businesses"))
 
 // Startup
 startupDebug(`Starting ${config.get("name")}...`);
@@ -44,16 +45,19 @@ function parseDatabaseURL() {
 async function connectToDatabase() {
   const db = config.get("db");
   const username = config.get("DB_USERNAME");
+  const password = config.get("DB_PASSWORD")
 
   try {
     await mongoose.connect(parseDatabaseURL(), {
       useNewUrlParser: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+      dbName: "snackchat"
     });
     startupDebug(`Connected to ${db} w/ username=${username}...`);
   } catch (err) {
     startupDebug(
-      `Failed to connect to ${db} w/ username=${username}...\n${err}`
+      `Failed to connect to ${db} w/ username=${username} password=${password}...\n${err}`
     );
   }
 }
