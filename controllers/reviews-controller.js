@@ -38,13 +38,16 @@ createReview = async (req, res) => {
     reviewImage: req.file.path,
     tags: req.body.tags,
     author: req.userData.userId,
-    business_id: req.body.business_id
+    businessId: req.body.businessId
   });
 
   try {
     await review.save();
 
-    await Business.findByIdAndUpdate(req.body.business_id, { $addToSet: { reviews: review._id, tags: review.tags }, $inc: {'review_count': 1} })
+    await Business.findByIdAndUpdate(req.body.businessId, {
+      $addToSet: { reviews: review._id, tags: review.tags },
+      $inc: { review_count: 1 }
+    });
 
     return res.status(201).send({
       review,
@@ -57,33 +60,43 @@ createReview = async (req, res) => {
 
 likeReview = async (req, res) => {
   try {
-    const review = await Review.findOneAndUpdate({ _id: req.params.id }, { $inc: { 'likeCount': 1 }, $addToSet: { 'likes': req.userData.userId } }).exec()
+    const review = await Review.findOneAndUpdate(
+      { _id: req.params.id },
+      { $inc: { likeCount: 1 }, $addToSet: { likes: req.userData.userId } }
+    ).exec();
 
-    await User.findByIdAndUpdate(req.userData.userId, { $addToSet: {likedReviews: review._id}})
+    await User.findByIdAndUpdate(req.userData.userId, {
+      $addToSet: { likedReviews: review._id }
+    });
 
     return res.status(200).send({
       message: "Successfully liked review!"
     });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return res.status(500).send({ err });
   }
-}
+};
 
 unlikeReview = async (req, res) => {
   try {
-    const review = await Review.findOneAndUpdate({ _id: req.params.id }, { $inc: { 'likeCount': -1 }, $pull: { likes: req.userData.userId }}).exec()
+    const review = await Review.findOneAndUpdate(
+      { _id: req.params.id },
+      { $inc: { likeCount: -1 }, $pull: { likes: req.userData.userId } }
+    ).exec();
 
-    await User.findByIdAndUpdate(req.userData.userId, { $pull: { likedReviews: review._id } })
+    await User.findByIdAndUpdate(req.userData.userId, {
+      $pull: { likedReviews: review._id }
+    });
 
     return res.status(200).send({
       message: "Successfully unliked review!"
     });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return res.status(500).send({ err });
   }
-}
+};
 
 updateReview = async (req, res) => {
   const { error } = validateReview(req.body);

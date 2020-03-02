@@ -25,7 +25,7 @@ const Review = mongoose.model(
     reviewImage: { type: String, required: true },
     tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tag" }],
     author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    business_id: { type: mongoose.Schema.Types.ObjectId, ref: "Business" },
+    businessId: { type: mongoose.Schema.Types.ObjectId, ref: "Business" },
     likeCount: { type: Number, default: 0 },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }]
   })
@@ -47,7 +47,7 @@ function validateReview(review) {
       .required(),
     tags: Joi.array(),
     likeCount: Joi.number(),
-    business_id: Joi.string()
+    businessId: Joi.string()
   });
 
   return schema.validate(review);
