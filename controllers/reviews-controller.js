@@ -73,7 +73,6 @@ likeReview = async (req, res) => {
       message: "Successfully liked review!"
     });
   } catch (err) {
-    console.log(err);
     return res.status(500).send({ err });
   }
 };
@@ -93,7 +92,6 @@ unlikeReview = async (req, res) => {
       message: "Successfully unliked review!"
     });
   } catch (err) {
-    console.log(err);
     return res.status(500).send({ err });
   }
 };

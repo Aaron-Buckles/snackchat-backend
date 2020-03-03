@@ -8,7 +8,7 @@ getUser = async (req, res) => {
     const user = await User.findOne({ _id: req.params.userId });
     res.status(200).send({ user });
   } catch (err) {
-    res.status(200).send({ err });
+    res.status(500).send({ err });
   }
 };
 
@@ -48,11 +48,17 @@ loginUser = async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
     console.log(user);
     if (!user) {
-      return res.status(401).send({ message: "Login failed (User does not exist)" });
+      return res
+        .status(401)
+        .send({ message: "Login failed (User does not exist)" });
     }
     bcrypt.compare(req.body.password, user.password, (err, result) => {
       if (err || !result) {
-        return res.status(401).send({ message: "Login failed" });
+        return res
+          .status(401)
+          .send({
+            message: "Login failed (Username or password is incorrect)"
+          });
       }
       const token = jwt.sign(
         {
@@ -72,9 +78,8 @@ loginUser = async (req, res) => {
   }
 };
 
-
 // Would need to invalidate existing JWT tokens when deleting account, but it's an edge case so not gonna bother
-// If you're bored, you can check this out: https://stackoverflow.com/questions/21978658/invalidating-json-web-tokens 
+// If you're bored, you can check this out: https://stackoverflow.com/questions/21978658/invalidating-json-web-tokens
 
 deleteUser = async (req, res) => {
   try {
