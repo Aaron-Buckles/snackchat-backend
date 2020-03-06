@@ -50,15 +50,13 @@ loginUser = async (req, res) => {
     if (!user) {
       return res
         .status(401)
-        .send({ message: "Login failed (User does not exist)" });
+        .send({ err: "Login failed (User does not exist)" });
     }
     bcrypt.compare(req.body.password, user.password, (err, result) => {
       if (err || !result) {
-        return res
-          .status(401)
-          .send({
-            message: "Login failed (Username or password is incorrect)"
-          });
+        return res.status(401).send({
+          err: "Login failed (Username or password is incorrect)"
+        });
       }
       const token = jwt.sign(
         {
