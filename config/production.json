@@ -1,4 +1,0 @@
-{
-  "name": "Snackchat (Prod)",
-  "db": "mongodb+srv://<username>:<password>@cluster0-ulaiv.mongodb.net/snackchat-prod?retryWrites=true&w=majority"
-}

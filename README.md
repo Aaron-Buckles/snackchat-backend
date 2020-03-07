@@ -4,22 +4,31 @@
 
 - Clone this repository
 - Run `npm i` to install all dependencies
-  - Must do this for both frontend and backend
 
 ## Running Backend
 
-- For database access set the following environment variables in the `/backend` directory
-- `DB_USERNAME`, `DB_PASSWORD`, `JWT_KEY`
-- For mac use the `export envVar=value` command in terminal:
-  - e.g. `export DB_USERNAME=hello123`
-- For windows master race use the `set` command in command prompt:
+### Environment Variables
 
-  - e.g. `set DB_USERNAME=hello123`
+Create a file named `.env`:
 
-- For debug logs set the DEBUG environment variable:
-  - `DEBUG=snackchat:*`
-- To run navigate to the `backend` folder and type `npm run dev` / `nodemon index.js`
-- Go to `http://localhost:3000/`
+```
+DEBUG=http
+DB_URI=aaa
+JWT_SECRET_KEY=bbb
+AWS_ACCESS_KEY_ID=ccc
+AWS_SECRET_ACCESS_KEY=ddd
+S3_BUCKET_NAME=cs125-snackchat
+```
+
+- Make sure that `DB_URI` contains your username and password
+  - Something like `mongodb+srv://<username>:<password>@cluster0-ulaiv.mongodb.net/test?retryWrites=true&w=majority`
+- Ask me for `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`
+- Remove `DEBUG` if you don't want to see any debugging information
+
+### Running
+
+- Type `npm run dev` in your terminal
+- The default port is 3000: `http://localhost:3000/`
   - If you have the `PORT` environment variable set to something else, then navigate to localhost for that port
 
 ## Documentation

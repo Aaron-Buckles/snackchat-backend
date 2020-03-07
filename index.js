@@ -1,10 +1,10 @@
-const config = require("config");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const express = require("express");
+require("dotenv").config();
 
 const app = express();
 
@@ -29,36 +29,23 @@ app.use("/docs", require("./routes/docs"));
 app.use("/api/users", require("./routes/users"));
 app.use("/api/reviews", require("./routes/reviews"));
 app.use("/api/tags", require("./routes/tags"));
-app.use("/api/businesses", require("./routes/businesses"))
+app.use("/api/businesses", require("./routes/businesses"));
 
 // Startup
-startupDebug(`Starting ${config.get("name")}...`);
+startupDebug(`Starting snackchat-backend...`);
 
 // MongoDB
-function parseDatabaseURL() {
-  return config
-    .get("db")
-    .replace("<username>", config.get("DB_USERNAME"))
-    .replace("<password>", config.get("DB_PASSWORD"));
-}
-
 async function connectToDatabase() {
-  const db = config.get("db");
-  const username = config.get("DB_USERNAME");
-  const password = config.get("DB_PASSWORD")
-
   try {
-    await mongoose.connect(parseDatabaseURL(), {
+    await mongoose.connect(process.env.DB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
       dbName: "snackchat"
     });
-    startupDebug(`Connected to ${db} w/ username=${username}...`);
+    startupDebug(`Connected to ${process.env.DB_URI}`);
   } catch (err) {
-    startupDebug(
-      `Failed to connect to ${db} w/ username=${username} password=${password}...\n${err}`
-    );
+    startupDebug(`Failed to connect to ${process.env.DB_URI}\n${err}`);
   }
 }
 

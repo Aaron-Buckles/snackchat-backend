@@ -7,10 +7,42 @@ getReviews = async (req, res) => {
     const reviews = await Review.find({})
       .populate("tags")
       .populate("author", "name");
-    if (reviews.length === 0)
-      return res.status(404).send({ err: "No Reviews found" });
     return res.status(200).send({ reviews });
   } catch (err) {
+    return res.status(500).send({ err });
+  }
+};
+
+getReviewsInRadius = async (req, res) => {
+  var milesToRadian = function(miles) {
+    var earthRadiusInMiles = 3959;
+    return miles / earthRadiusInMiles;
+  };
+
+  const long = req.query.long;
+  const lat = req.query.lat;
+  const miles = req.query.miles;
+  const limit = parseInt(req.query.limit);
+
+  try {
+    var query = {
+      location: {
+        $geoWithin: {
+          $centerSphere: [[long, lat], milesToRadian(miles)]
+        }
+      }
+    };
+
+    const businessIds = await Business.find(query).select("_id");
+    const reviews = await Review.find({ businessId: { $in: businessIds } })
+      .sort("likeCount")
+      .limit(limit)
+      .populate("tags")
+      .populate("author", "name");
+
+    return res.status(200).send({ reviews });
+  } catch (err) {
+    console.log(err);
     return res.status(500).send({ err });
   }
 };
@@ -46,7 +78,7 @@ createReview = async (req, res) => {
 
     await Business.findByIdAndUpdate(req.body.businessId, {
       $addToSet: { reviews: review._id, tags: review.tags },
-      $inc: { review_count: 1 }
+      $inc: { reviewCount: 1 }
     });
 
     return res.status(201).send({
@@ -136,6 +168,7 @@ deleteReview = async (req, res) => {
 
 module.exports = {
   getReviews,
+  getReviewsInRadius,
   getReviewById,
   likeReview,
   unlikeReview,

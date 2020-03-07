@@ -25,7 +25,19 @@ const fileFilter = (req, file, cb) => {
 };
 const upload = multer({ storage, fileFilter });
 
-router.get("/", ReviewController.getReviews);
+const skipIfQuery = function(middleware) {
+  return function(req, res, next) {
+    console.log(req.query);
+    if (req.query.long) return next();
+    return middleware(req, res, next);
+  };
+};
+
+router.get(
+  "/",
+  skipIfQuery(ReviewController.getReviews),
+  ReviewController.getReviewsInRadius
+);
 router.get("/:id", ReviewController.getReviewById);
 router.post(
   "/",
@@ -33,16 +45,8 @@ router.post(
   upload.single("reviewImage"),
   ReviewController.createReview
 );
-router.post(
-  "/:id/like",
-  checkAuth,
-  ReviewController.likeReview
-);
-router.post(
-  "/:id/unlike",
-  checkAuth,
-  ReviewController.unlikeReview
-);
+router.post("/:id/like", checkAuth, ReviewController.likeReview);
+router.post("/:id/unlike", checkAuth, ReviewController.unlikeReview);
 router.put(
   "/:id",
   checkAuth,
