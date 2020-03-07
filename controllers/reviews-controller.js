@@ -6,7 +6,8 @@ getReviews = async (req, res) => {
   try {
     const reviews = await Review.find({})
       .populate("tags")
-      .populate("author", "name");
+      .populate("author", "name")
+      .populate("businessId");
     return res.status(200).send({ reviews });
   } catch (err) {
     return res.status(500).send({ err });
@@ -38,7 +39,8 @@ getReviewsInRadius = async (req, res) => {
       .sort("likeCount")
       .limit(limit)
       .populate("tags")
-      .populate("author", "name");
+      .populate("author", "name")
+      .populate("businessId");
 
     return res.status(200).send({ reviews });
   } catch (err) {
