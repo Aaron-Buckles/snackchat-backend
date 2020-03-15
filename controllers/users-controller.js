@@ -4,7 +4,8 @@ const { User, validateUser } = require("../models/user");
 
 getUser = async (req, res) => {
   try {
-    const user = await User.findOne({ _id: req.params.userId });
+    const user = await User.findOne({ _id: req.params.userId })
+        .populate("preferences");
     res.status(200).send({ user });
   } catch (err) {
     res.status(500).send({ err });
