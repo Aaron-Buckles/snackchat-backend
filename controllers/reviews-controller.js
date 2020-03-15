@@ -103,6 +103,43 @@ likeReview = async (req, res) => {
       $addToSet: { likedReviews: review._id }
     });
 
+
+    const agg = await User.aggregate([
+      {
+        '$lookup': {
+          'from': 'reviews',
+          'localField': 'likedReviews',
+          'foreignField': '_id',
+          'as': 'likedReviews'
+        }
+      }, {
+        '$unwind': {
+          'path': '$likedReviews'
+        }
+      }, {
+        '$unwind': {
+          'path': '$likedReviews.tags'
+        }
+      }, {
+        '$group': {
+          '_id': '$likedReviews.tags',
+          'number': {
+            '$sum': 1
+          }
+        }
+      }, {
+        '$match': {
+          'number': { "$gte": 4 }
+        }
+      }
+    ])
+
+    console.log(agg)
+
+    await User.findByIdAndUpdate(req.userData.userId, {
+      $addToSet: { preferences: { $each: agg} }
+    });
+
     return res.status(200).send({
       message: "Successfully liked review!"
     });
