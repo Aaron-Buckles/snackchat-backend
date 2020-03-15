@@ -5,6 +5,7 @@ const { User } = require("../models/user");
 getReviews = async (req, res) => {
   try {
     const reviews = await Review.find({})
+      .sort("-likeCount")
       .populate("tags")
       .populate("author", "name")
       .populate("businessId");
@@ -36,8 +37,8 @@ getReviewsInRadius = async (req, res) => {
 
     const businessIds = await Business.find(query).select("_id");
     const reviews = await Review.find({ businessId: { $in: businessIds } })
-      .sort("likeCount")
       .limit(limit)
+      .sort("-likeCount")
       .populate("tags")
       .populate("author", "name")
       .populate("businessId");
