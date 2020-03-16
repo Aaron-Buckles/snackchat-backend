@@ -64,13 +64,14 @@ getReviewById = async (req, res) => {
 
 createReview = async (req, res) => {
   const { error } = validateReview(req.body);
+  console.log(error);
   if (error) return res.status(400).send({ err: error.details[0].message });
 
   const review = new Review({
     title: req.body.title,
     description: req.body.description,
     starRating: req.body.starRating,
-    reviewImage: req.file.path,
+    reviewImageURL: req.body.reviewImageURL,
     tags: req.body.tags,
     author: req.userData.userId,
     businessId: req.body.businessId
@@ -104,41 +105,44 @@ likeReview = async (req, res) => {
       $addToSet: { likedReviews: review._id }
     });
 
-
     const agg = await User.aggregate([
       {
-        '$lookup': {
-          'from': 'reviews',
-          'localField': 'likedReviews',
-          'foreignField': '_id',
-          'as': 'likedReviews'
+        $lookup: {
+          from: "reviews",
+          localField: "likedReviews",
+          foreignField: "_id",
+          as: "likedReviews"
         }
-      }, {
-        '$unwind': {
-          'path': '$likedReviews'
+      },
+      {
+        $unwind: {
+          path: "$likedReviews"
         }
-      }, {
-        '$unwind': {
-          'path': '$likedReviews.tags'
+      },
+      {
+        $unwind: {
+          path: "$likedReviews.tags"
         }
-      }, {
-        '$group': {
-          '_id': '$likedReviews.tags',
-          'number': {
-            '$sum': 1
+      },
+      {
+        $group: {
+          _id: "$likedReviews.tags",
+          number: {
+            $sum: 1
           }
         }
-      }, {
-        '$match': {
-          'number': { "$gte": 4 }
+      },
+      {
+        $match: {
+          number: { $gte: 4 }
         }
       }
-    ])
+    ]);
 
-    console.log(agg)
+    console.log(agg);
 
     await User.findByIdAndUpdate(req.userData.userId, {
-      $addToSet: { preferences: { $each: agg} }
+      $addToSet: { preferences: { $each: agg } }
     });
 
     return res.status(200).send({
@@ -177,7 +181,7 @@ updateReview = async (req, res) => {
       title: req.body.title,
       description: req.body.description,
       starRating: req.body.starRating,
-      reviewImage: req.file.path
+      reviewImageURL: req.body.reviewImageURL
     });
 
     if (!review) return res.status(404).send({ err: "Review not found" });

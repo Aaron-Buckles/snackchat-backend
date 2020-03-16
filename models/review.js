@@ -22,7 +22,7 @@ const Review = mongoose.model(
       min: 0,
       max: 5
     },
-    reviewImage: { type: String, required: true },
+    reviewImageURL: { type: String, required: true },
     tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tag" }],
     author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     businessId: { type: mongoose.Schema.Types.ObjectId, ref: "Business" },
@@ -45,6 +45,7 @@ function validateReview(review) {
       .min(0)
       .max(5)
       .required(),
+    reviewImageURL: Joi.string().required(),
     tags: Joi.array(),
     likeCount: Joi.number(),
     businessId: Joi.string()
