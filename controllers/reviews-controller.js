@@ -107,6 +107,11 @@ likeReview = async (req, res) => {
 
     const agg = await User.aggregate([
       {
+        $match: {
+          _id: ObjectId(req.userData.userId)
+        }
+      },
+      {
         $lookup: {
           from: "reviews",
           localField: "likedReviews",
@@ -134,7 +139,7 @@ likeReview = async (req, res) => {
       },
       {
         $match: {
-          number: { $gte: 4 }
+          number: { $gte: 3 }
         }
       }
     ]);
