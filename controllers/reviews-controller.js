@@ -1,6 +1,7 @@
 const { Review, validateReview } = require("../models/review");
 const { Business } = require("../models/business");
 const { User } = require("../models/user");
+const mongoose = require("mongoose");
 
 getReviews = async (req, res) => {
   try {
@@ -108,7 +109,7 @@ likeReview = async (req, res) => {
     const agg = await User.aggregate([
       {
         $match: {
-          _id: ObjectId(req.userData.userId)
+          _id: mongoose.Types.ObjectId(req.userData.userId)
         }
       },
       {
